@@ -109,13 +109,22 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
 
         // set assignment
         let assignment = assignmentGroup.assignments.find(obj => obj["id"] == submission.assignment_id);
-        let avgScore = submission.submission.score / assignment.points_possible; // goes in with string ???
+        let learnerScore = submission.submission.score;
+        let possibleScore = assignment.points_possible;
 
-        // if assignment is not yet due, do not include it in results or the average
-        // else add assignment score average to object
-        let today = new Date();
-        let assignmentDate = new Date(assignment.due_at);
-        assignmentDate.getTime() < today.getTime()? learner[submission.assignment_id] = avgScore : null;
+        // time variables
+        let today = new Date().getTime();
+        let dueAt = new Date(assignment.due_at).getTime();
+        let submittedAt = new Date(submission.submission.submitted_at).getTime();
+
+        // if learner's submission is late, deduct 10 percent
+        submittedAt > dueAt? learnerScore -= possibleScore * .1 : null;
+
+        // add the assignment avg score to object.
+        // check for if assignment is not yet due to not include it in results or the average
+        let avgScore = learnerScore / assignment.points_possible;
+        dueAt < today? learner[submission.assignment_id] = avgScore : null;
+
 
         // set total average by finding each parameters that's not id or avg
         let avgs = [];
