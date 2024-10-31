@@ -94,13 +94,20 @@ const LearnerSubmissions = [
 ￣￣￣￣￣￣￣￣￣￣￣￣
 */
 
-const learners = [{id: 125, grade: "hjey"}];
+
 
 function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
-    LearnerSubmissions.forEach(submission => {
+
+    let learners = [];
+
+    learnerSubmissions.forEach(submission => {
         // get learner object using learner_id
-        let learnerId = submission.learner_id;
-        let learner = getObjectinArray("id", learnerId, learners);
+        let learner = getObjectinArray("id", submission.learner_id, learners);
+
+        if (!learners.includes(learner)) {
+            // if doesn't exist already, push object to array
+            learners.push(learner);
+        }
 
         // set assignment.
         let assignmentId = submission.assignment_id;
@@ -108,34 +115,33 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
         let score = submission.submission.score;
         // get the assignment's highest possible score from the assignmentGroup's assignment property
         let possibleScore = assignmentGroup.assignments.find(obj => obj["id"] == assignmentId).points_possible;
-        console.log(score+"/"+possibleScore)
+        let assignmentAvg = score / possibleScore;
+
+        /* 
+        for some reason, the id always sets as a string. I found that to set it as integer, I need to use Map
+        instead of Object.
+        I will fix this later after clarifying with Christina
+        */
+        learner[assignmentId] = assignmentAvg; 
+
+        learners[learners.indexOf(learner)] = learner;
 
     })
     return learners;
 }
 
-
-function objectExistsInArray(key, value, arr) {
-    // checks if an object exists inside an array
-    if (arr.length != 0 && arr.find(obj => obj[key] == value) != null) {
-        // if arr is not empty & an object exists with the key value, return true;
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
 function getObjectinArray(key, value, arr) {
     // get an object inside an array by key 
-    if (objectExistsInArray(key, value, arr)) {
-        // if object exists, return the object
-        return arr.find(obj => obj[key] == value);
+    for (i in arr) {
+        let obj = arr[i];
+        if ('id' in obj && obj['id'] == value) {
+            return obj;
+        }
     }
-    else {
-        // else return a new object with {key: value}
-        return {key: value};
-    }
+    // if object doesn't exist, return a new one with key value
+    return { [key]: value };
 }
 
-getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
+// Log result
+const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
+console.log(result);
