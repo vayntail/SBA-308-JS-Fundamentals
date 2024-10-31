@@ -98,7 +98,7 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
     if (assignmentGroup.course_id != courseInfo.id) {
         throw new Error(`Error: AssignmentGroup does not belong to its course!!! \nCourseInfo's id is ${courseInfo.id}, while AssignmentGroup's course_id is ${assignmentGroup.course_id}...`);
     }
-
+    
     let learners = [];
     learnerSubmissions.forEach(submission => {
         // get learner object using learner_id
@@ -107,10 +107,15 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
         // if doesn't exist already, push object to array
         (!learners.includes(learner)) ? learners.push(learner) : null;
 
-        // set assignment score averages
-        let score = submission.submission.score;
-        let possibleScore = assignmentGroup.assignments.find(obj => obj["id"] == submission.assignment_id).points_possible;
-        learner[submission.assignment_id] = score / possibleScore; // goes in with string ???
+        // set assignment
+        let assignment = assignmentGroup.assignments.find(obj => obj["id"] == submission.assignment_id);
+        let avgScore = submission.submission.score / assignment.points_possible; // goes in with string ???
+
+        // if assignment is not yet due, do not include it in results or the average
+        // else add assignment score average to object
+        let today = new Date();
+        let assignmentDate = new Date(assignment.due_at);
+        assignmentDate.getTime() < today.getTime()? learner[submission.assignment_id] = avgScore : null;
 
         // set total average by finding each parameters that's not id or avg
         let avgs = [];
