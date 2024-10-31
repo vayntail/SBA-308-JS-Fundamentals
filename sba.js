@@ -98,8 +98,9 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
     if (assignmentGroup.course_id != courseInfo.id) {
         throw new Error(`Error: AssignmentGroup does not belong to its course!!! \nCourseInfo's id is ${courseInfo.id}, while AssignmentGroup's course_id is ${assignmentGroup.course_id}...`);
     }
-    
+
     let learners = [];
+    // loop through each submission
     learnerSubmissions.forEach(submission => {
         // get learner object using learner_id
         let learner = getLearnerObject("id", submission.learner_id, learners);
@@ -117,27 +118,20 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
         let dueAt = new Date(assignment.due_at).getTime();
         let submittedAt = new Date(submission.submission.submitted_at).getTime();
 
-        // if learner's submission is late, deduct 10 percent
-        submittedAt > dueAt? learnerScore -= possibleScore * .1 : null;
+        // if learner's submission is late, deduct 10 percent from learner score.
+        submittedAt > dueAt ? learnerScore -= possibleScore * .1 : null;
 
-        // add the assignment avg score to object.
-        // check for if assignment is not yet due to not include it in results or the average
+        // calculate average score
         let avgScore = learnerScore / assignment.points_possible;
-        dueAt < today? learner[submission.assignment_id] = avgScore : null;
+        // only include assignments that were already due before today
+        dueAt < today ? learner[submission.assignment_id] = avgScore : null;
 
-
-        // set total average by finding each parameters that's not id or avg
-        let avgs = [];
-        for (key in learner) {
-            if (key != "id" && key != "avg") {
-                avgs.push(learner[key]);
-            }
-        }
-        let totalAvg = avgs.reduce((acc, value) => acc + value) / avgs.length;
+        // set avg property
+        const totalAvg = getLearnerTotalAverage(learner);
         learner["avg"] = totalAvg;
-
+        
+        // update the learner object in learners array with above changes made.
         learners[learners.indexOf(learner)] = learner;
-
     })
     return learners;
 }
@@ -152,6 +146,18 @@ function getLearnerObject(key, value, arr) {
     }
     // if object doesn't exist, return a new one with key value
     return { [key]: value };
+}
+
+function getLearnerTotalAverage(learner) {
+    // set total average by finding each parameters that's not id or avg
+    let avgs = [];
+    for (key in learner) {
+        if (key != "id" && key != "avg") {
+            avgs.push(learner[key]);
+        }
+    }
+    let totalAvg = avgs.reduce((acc, value) => acc + value) / avgs.length;
+    return totalAvg;
 }
 
 // Log result
