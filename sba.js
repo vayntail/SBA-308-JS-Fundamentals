@@ -93,36 +93,34 @@ const LearnerSubmissions = [
 |           (my code starts here...)           |   
 ￣￣￣￣￣￣￣￣￣￣￣￣
 */
-
-
-
 function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
+    // if assignmentGroup does not belong to its course, throw an error
+    if (assignmentGroup.course_id != courseInfo.id) {
+        throw new Error(`Error: AssignmentGroup does not belong to its course!!! \nCourseInfo's id is ${courseInfo.id}, while AssignmentGroup's course_id is ${assignmentGroup.course_id}...`);
+    }
 
     let learners = [];
-
     learnerSubmissions.forEach(submission => {
         // get learner object using learner_id
-        let learner = getObjectinArray("id", submission.learner_id, learners);
+        let learner = getLearnerObject("id", submission.learner_id, learners);
 
-        if (!learners.includes(learner)) {
-            // if doesn't exist already, push object to array
-            learners.push(learner);
-        }
+        // if doesn't exist already, push object to array
+        (!learners.includes(learner)) ? learners.push(learner) : null;
 
-        // set assignment.
-        let assignmentId = submission.assignment_id;
-        // get score from submission's submission's score
+        // set assignment score averages
         let score = submission.submission.score;
-        // get the assignment's highest possible score from the assignmentGroup's assignment property
-        let possibleScore = assignmentGroup.assignments.find(obj => obj["id"] == assignmentId).points_possible;
-        let assignmentAvg = score / possibleScore;
+        let possibleScore = assignmentGroup.assignments.find(obj => obj["id"] == submission.assignment_id).points_possible;
+        learner[submission.assignment_id] = score / possibleScore; // goes in with string ???
 
-        /* 
-        for some reason, the id always sets as a string. I found that to set it as integer, I need to use Map
-        instead of Object.
-        I will fix this later after clarifying with Christina
-        */
-        learner[assignmentId] = assignmentAvg; 
+        // set total average by finding each parameters that's not id or avg
+        let avgs = [];
+        for (key in learner) {
+            if (key != "id" && key != "avg") {
+                avgs.push(learner[key]);
+            }
+        }
+        let totalAvg = avgs.reduce((acc, value) => acc + value) / avgs.length;
+        learner["avg"] = totalAvg;
 
         learners[learners.indexOf(learner)] = learner;
 
@@ -130,7 +128,7 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
     return learners;
 }
 
-function getObjectinArray(key, value, arr) {
+function getLearnerObject(key, value, arr) {
     // get an object inside an array by key 
     for (i in arr) {
         let obj = arr[i];
