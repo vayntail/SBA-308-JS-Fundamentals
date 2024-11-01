@@ -45,47 +45,47 @@ const TestCase = () => {
 
     // The provided learner submission data.
     learnerSubmissions = [
-    {
-        learner_id: 125,
-        assignment_id: 1,
-        submission: {
-            submitted_at: "2023-01-25",
-            score: 47
+        {
+            learner_id: 125,
+            assignment_id: 1,
+            submission: {
+                submitted_at: "2023-01-25",
+                score: 47
+            }
+        },
+        {
+            learner_id: 125,
+            assignment_id: 2,
+            submission: {
+                submitted_at: "2023-02-12",
+                score: 150
+            }
+        },
+        {
+            learner_id: 125,
+            assignment_id: 3,
+            submission: {
+                submitted_at: "2023-01-25",
+                score: 400
+            }
+        },
+        {
+            learner_id: 132,
+            assignment_id: 1,
+            submission: {
+                submitted_at: "2023-01-24",
+                score: 39
+            }
+        },
+        {
+            learner_id: 132,
+            assignment_id: 2,
+            submission: {
+                submitted_at: "2023-03-07",
+                score: 140
+            }
         }
-    },
-    {
-        learner_id: 125,
-        assignment_id: 2,
-        submission: {
-            submitted_at: "2023-02-12",
-            score: 150
-        }
-    },
-    {
-        learner_id: 125,
-        assignment_id: 3,
-        submission: {
-            submitted_at: "2023-01-25",
-            score: 400
-        }
-    },
-    {
-        learner_id: 132,
-        assignment_id: 1,
-        submission: {
-            submitted_at: "2023-01-24",
-            score: 39
-        }
-    },
-    {
-        learner_id: 132,
-        assignment_id: 2,
-        submission: {
-            submitted_at: "2023-03-07",
-            score: 140
-        }
-    }
-];
+    ];
 
 }
 
@@ -250,8 +250,6 @@ const TestCase = () => {
 
 
 
-
-
 //
 /* 
  ∧,,,∧
@@ -275,20 +273,20 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
     // loop through each submission
     learnerSubmissions.forEach(submission => {
         // get learner object using learner_id
-        let learner = getLearnerObject("id", submission.learner_id, learners);
+        let learner = getLearnerObject("id", checkInt(submission.learner_id), learners);
 
         // if doesn't exist already, push object to array
         (!learners.includes(learner)) ? learners.push(learner) : null;
 
         // set assignment
-        let assignment = assignmentGroup.assignments.find(obj => obj["id"] == submission.assignment_id);
-        let learnerScore = submission.submission.score;
-        let possibleScore = assignment.points_possible;
+        let assignment = assignmentGroup.assignments.find(obj => obj["id"] == checkInt(submission.assignment_id));
+        let learnerScore = checkInt(submission.submission.score);
+        let possibleScore = checkInt(assignment.points_possible);
 
         // time variables
         let today = new Date().getTime();
-        let dueAt = new Date(assignment.due_at).getTime();
-        let submittedAt = new Date(submission.submission.submitted_at).getTime();
+        let dueAt = getDate(assignment.due_at);
+        let submittedAt = getDate(submission.submission.submitted_at);
 
         // if learner's submission is late, deduct 10 percent from learner score.
         submittedAt > dueAt ? learnerScore -= possibleScore * .1 : null;
@@ -318,6 +316,26 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
     return learners;
 }
 
+function checkInt(value) {
+    // checks if given value is an integer, or if it can at least be changed to an integer
+    // then returns it
+    if (!Number.isInteger(value)) {
+        if (isNaN(parseInt(value))) {
+            throw new Error(`Error: ${value} is an invalid number.`);
+        }
+    }
+    return parseInt(value);
+}
+
+function getDate(string) {
+    // returns a Date().getTime() with a given string in the format of "YYYY-MM-DD"
+    // check if in right formats
+    if (new Date(string) == "Invalid Date" | typeof string != "string") {
+        throw new Error(`Error: ${string} is an invalid date!! Make sure all dates are written in this string format: "YYYY-MM-dd"`)
+    }
+    return new Date(string);
+}
+
 function getLearnerObject(key, value, arr) {
     // get an object inside an array by key 
     for (i in arr) {
@@ -334,7 +352,7 @@ function getLearnerAvgScores(learner) {
     // calculate averages and update
     let total = 0;
     let totalPossible = 0;
-    
+
     // for each assignment in learner.scores
     try {
         // check if scores exists, then add to totals
@@ -350,11 +368,11 @@ function getLearnerAvgScores(learner) {
             }
         }
     }
-    catch (e){
+    catch (e) {
         // if scores doesn't exist and throws an error, just return here
         return learner;
     }
-    
+
     // find and set avg property
     learner["avg"] = total / totalPossible;
     return learner;
