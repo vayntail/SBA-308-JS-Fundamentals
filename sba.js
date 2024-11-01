@@ -121,18 +121,28 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
         // if learner's submission is late, deduct 10 percent from learner score.
         submittedAt > dueAt ? learnerScore -= possibleScore * .1 : null;
 
-        // calculate average score
-        let avgScore = learnerScore / assignment.points_possible;
-        // only include assignments that were already due before today
-        dueAt < today ? learner[submission.assignment_id] = avgScore : null;
 
-        // set avg property
-        const totalAvg = getLearnerTotalAverage(learner);
-        learner["avg"] = totalAvg;
-        
+        // set temp list property in object which will be used to calculate average later
+        // only include assignments that were already due before today
+        if (dueAt < today) {
+            if ("scores" in learner) {
+                learner.scores.push([learnerScore, possibleScore]);
+            }
+            else {
+                learner["scores"] = [[learnerScore, possibleScore]];
+            }
+
+            // add property for the assignment
+            learner[submission.assignment_id] = learnerScore / possibleScore;
+        }
+
+        learner = getLearnerAvgScores(learner);
         // update the learner object in learners array with above changes made.
         learners[learners.indexOf(learner)] = learner;
     })
+    // for each learner, remove the temp scores property
+    learners.forEach(learner => delete learner.scores);
+
     return learners;
 }
 
@@ -148,16 +158,19 @@ function getLearnerObject(key, value, arr) {
     return { [key]: value };
 }
 
-function getLearnerTotalAverage(learner) {
-    // set total average by finding each parameters that's not id or avg
-    let avgs = [];
-    for (key in learner) {
-        if (key != "id" && key != "avg") {
-            avgs.push(learner[key]);
-        }
-    }
-    let totalAvg = avgs.reduce((acc, value) => acc + value) / avgs.length;
-    return totalAvg;
+function getLearnerAvgScores(learner) {
+    // calculate averages and update
+
+    let total = 0;
+    let totalPossible = 0;
+    // for each assignment in learner.scores
+    learner.scores.forEach((score) => {
+        total += score[0];
+        totalPossible += score[1];
+    })
+    // set avg property
+    learner["avg"] = total / totalPossible;
+    return learner;
 }
 
 // Log result
