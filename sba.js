@@ -3,43 +3,48 @@
 (  ̳• · • ̳)   ~ ♡  Test Data!   ♡
 /       づ  ~ ┗━━━━━━━━┛     
 */
+let courseInfo;
+let assignmentGroup;
+let learnerSubmissions;
 
-// The provided course information.
-const CourseInfo = {
-    id: 451,
-    name: "Introduction to JavaScript"
-};
+// Provided Test Case Information
+const TestCase = () => {
+    // The provided course information.
+    courseInfo = {
+        id: 451,
+        name: "Introduction to JavaScript"
+    };
 
-// The provided assignment group.
-const AssignmentGroup = {
-    id: 12345,
-    name: "Fundamentals of JavaScript",
-    course_id: 451,
-    group_weight: 25,
-    assignments: [
-        {
-            id: 1,
-            name: "Declare a Variable",
-            due_at: "2023-01-25",
-            points_possible: 50
-        },
-        {
-            id: 2,
-            name: "Write a Function",
-            due_at: "2023-02-27",
-            points_possible: 150
-        },
-        {
-            id: 3,
-            name: "Code the World",
-            due_at: "3156-11-15",
-            points_possible: 500
-        }
-    ]
-};
+    // The provided assignment group.
+    assignmentGroup = {
+        id: 12345,
+        name: "Fundamentals of JavaScript",
+        course_id: 451,
+        group_weight: 25,
+        assignments: [
+            {
+                id: 1,
+                name: "Declare a Variable",
+                due_at: "2023-01-25",
+                points_possible: 50
+            },
+            {
+                id: 2,
+                name: "Write a Function",
+                due_at: "2023-02-27",
+                points_possible: 150
+            },
+            {
+                id: 3,
+                name: "Code the World",
+                due_at: "3156-11-15",
+                points_possible: 500
+            }
+        ]
+    };
 
-// The provided learner submission data.
-const LearnerSubmissions = [
+    // The provided learner submission data.
+    learnerSubmissions = [
     {
         learner_id: 125,
         assignment_id: 1,
@@ -82,6 +87,168 @@ const LearnerSubmissions = [
     }
 ];
 
+}
+
+// Error cases!
+
+// courseInfo's do not match up
+// const ErrorCaseOne = () => {
+//     courseInfo = {
+//         id: 454,
+//         name: "Introduction to JavaScript"
+//     };
+
+//     assignmentGroup = {
+//         id: 12345,
+//         name: "Fundamentals of JavaScript",
+//         course_id: 451,
+//         group_weight: 25,
+//         assignments: [
+//             {
+//                 id: 1,
+//                 name: "Declare a Variable",
+//                 due_at: "2023-01-25",
+//                 points_possible: 0
+//             },
+//             {
+//                 id: 2,
+//                 name: "Write a Function",
+//                 due_at: "2023-02-27",
+//                 points_possible: 150
+//             },
+//             {
+//                 id: 3,
+//                 name: "Code the World",
+//                 due_at: "3156-11-15",
+//                 points_possible: 500
+//             }
+//         ]
+//     };
+
+//     learnerSubmissions = [
+//     {
+//         learner_id: 125,
+//         assignment_id: 1,
+//         submission: {
+//             submitted_at: "2023-01-25",
+//             score: 47
+//         }
+//     },
+//     {
+//         learner_id: 125,
+//         assignment_id: 2,
+//         submission: {
+//             submitted_at: "2023-02-12",
+//             score: 150
+//         }
+//     },
+//     {
+//         learner_id: 125,
+//         assignment_id: 3,
+//         submission: {
+//             submitted_at: "2023-01-25",
+//             score: 400
+//         }
+//     },
+//     {
+//         learner_id: 132,
+//         assignment_id: 1,
+//         submission: {
+//             submitted_at: "2023-01-24",
+//             score: 39
+//         }
+//     },
+//     {
+//         learner_id: 132,
+//         assignment_id: 2,
+//         submission: {
+//             submitted_at: "2023-03-07",
+//             score: 140
+//         }
+//     }
+// ];
+
+// }
+// const ErrorCaseTwo = () => {
+//     courseInfo = {
+//         id: 451,
+//         name: "Introduction to JavaScript"
+//     };
+
+//     assignmentGroup = {
+//         id: 12345,
+//         name: "Fundamentals of JavaScript",
+//         course_id: 451,
+//         group_weight: 25,
+//         assignments: [
+//             {
+//                 id: 1,
+//                 name: "Declare a Variable",
+//                 due_at: "2023-01-25",
+//                 points_possible: 0 // 0
+//             },
+//             {
+//                 id: 2,
+//                 name: "Write a Function",
+//                 due_at: "2023-02-27",
+//                 points_possible: '150' // string
+//             },
+//             {
+//                 id: 3,
+//                 name: "Code the World",
+//                 due_at: "31561115",
+//                 points_possible: 500
+//             }
+//         ]
+//     };
+
+//     learnerSubmissions = [
+//     {
+//         learner_id: 125,
+//         assignment_id: 1,
+//         submission: {
+//             submitted_at: "2023-01-25",
+//             score: 47
+//         }
+//     },
+//     {
+//         learner_id: 125,
+//         assignment_id: 2,
+//         submission: {
+//             submitted_at: 20230212, // number
+//             score: 150
+//         }
+//     },
+//     {
+//         learner_id: 125,
+//         assignment_id: 3,
+//         submission: {
+//             submitted_at: "2023-01-25",
+//             score: 400
+//         }
+//     },
+//     {
+//         learner_id: 132,
+//         assignment_id: 1,
+//         submission: {
+//             submitted_at: "2023-01-24",
+//             score: 39
+//         }
+//     },
+//     {
+//         learner_id: 132,
+//         assignment_id: 2,
+//         submission: {
+//             submitted_at: "2023-03-07",
+//             score: 140
+//         }
+//     }
+// ];
+
+// }
+
+
+
 
 
 
@@ -93,13 +260,18 @@ const LearnerSubmissions = [
 |           (my code starts here...)           |   
 ￣￣￣￣￣￣￣￣￣￣￣￣
 */
+
+TestCase();
+// ErrorCaseOne();
+// ErrorCaseTwo();
+
 function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
     // if assignmentGroup does not belong to its course, throw an error
     if (assignmentGroup.course_id != courseInfo.id) {
         throw new Error(`Error: AssignmentGroup does not belong to its course!!! \nCourseInfo's id is ${courseInfo.id}, while AssignmentGroup's course_id is ${assignmentGroup.course_id}...`);
     }
 
-    let learners = [];
+    const learners = [];
     // loop through each submission
     learnerSubmissions.forEach(submission => {
         // get learner object using learner_id
@@ -123,8 +295,8 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
 
 
         // set temp list property in object which will be used to calculate average later
-        // only include assignments that were already due before today
-        if (dueAt < today) {
+        // only include assignments that were already due before today & make sure possibleScore do not equal zero
+        if (dueAt < today && possibleScore != 0) {
             if ("scores" in learner) {
                 learner.scores.push([learnerScore, possibleScore]);
             }
@@ -160,19 +332,34 @@ function getLearnerObject(key, value, arr) {
 
 function getLearnerAvgScores(learner) {
     // calculate averages and update
-
     let total = 0;
     let totalPossible = 0;
+    
     // for each assignment in learner.scores
-    learner.scores.forEach((score) => {
-        total += score[0];
-        totalPossible += score[1];
-    })
-    // set avg property
+    try {
+        // check if scores exists, then add to totals
+        let i = 0;
+        while (true) {
+            let score = learner.scores[i];
+            total += score[0];
+            totalPossible += score[1];
+
+            i += 1;
+            if (i == learner.scores.length) {
+                break;
+            }
+        }
+    }
+    catch (e){
+        // if scores doesn't exist and throws an error, just return here
+        return learner;
+    }
+    
+    // find and set avg property
     learner["avg"] = total / totalPossible;
     return learner;
 }
 
 // Log result
-const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
+const result = getLearnerData(courseInfo, assignmentGroup, learnerSubmissions);
 console.log(result);
